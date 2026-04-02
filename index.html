@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML + CSS + JS v 14 krokoch</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0c0c0f;
+    --bg2: #141419;
+    --bg3: #1c1c24;
+    --text: #e8e6e1;
+    --text-dim: #8a8a95;
+    --accent: #f0c040;
+    --accent2: #e87040;
+    --accent3: #40b0f0;
+    --html-color: #e86030;
+    --css-color: #3090e0;
+    --js-color: #f0d040;
+    --card-border: rgba(255,255,255,0.06);
+    --glow: rgba(240,192,64,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    backdrop-filter: blur(20px);
+    background: rgba(12,12,15,0.8);
+    border-bottom: 1px solid var(--card-border);
+  }
+  nav .logo {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+  }
+  nav .logo span { color: var(--accent); }
+  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.85rem;
+    letter-spacing: 0.04em; text-transform: uppercase; font-weight: 500;
+    transition: color 0.3s;
+  }
+  nav a:hover { color: var(--accent); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(240,192,64,0.07) 0%, rgba(232,112,64,0.03) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--bg3); border: 1px solid var(--card-border);
+    padding: 0.5rem 1.2rem; border-radius: 100px;
+    font-size: 0.8rem; color: var(--text-dim);
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+  .hero h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 400;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.15rem; color: var(--text-dim);
+    max-width: 520px; margin: 1.5rem auto 2.5rem;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .hero-stats {
+    display: flex; gap: 3rem;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .hero-stat .num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2.5rem; color: var(--accent);
+  }
+  .hero-stat .label {
+    font-size: 0.75rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+  .scroll-hint span {
+    font-size: 0.7rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .scroll-line {
+    width: 1px; height: 40px; background: var(--card-border);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: ''; position: absolute; top: -40px; left: 0;
+    width: 1px; height: 40px; background: var(--accent);
+    animation: scrollDown 2s infinite;
+  }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.15em; color: var(--accent);
+    margin-bottom: 0.75rem; font-weight: 600;
+  }
+  .section-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    font-weight: 400;
+  }
+  .section-desc {
+    color: var(--text-dim); max-width: 600px;
+    font-size: 1rem; margin-bottom: 3rem;
+  }
+
+  /* ─── WEEK HEADER ─── */
+  .week-header {
+    display: flex; align-items: center; gap: 1.5rem;
+    margin: 4rem 0 2rem; padding-bottom: 1rem;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .week-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 3.5rem; line-height: 1;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .week-info h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.5rem; font-weight: 400;
+  }
+  .week-info p { font-size: 0.85rem; color: var(--text-dim); }
+
+  /* ─── DAY CARDS ─── */
+  .day-card {
+    background: var(--bg2);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .day-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .day-card:hover {
+    border-color: rgba(240,192,64,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .day-card:hover::before { opacity: 1; }
+
+  .day-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .day-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+  .day-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.4rem; margin-bottom: 0.5rem;
+  }
+  .day-summary {
+    color: var(--text-dim); font-size: 0.9rem;
+  }
+  .day-tags {
+    display: flex; gap: 0.4rem; flex-shrink: 0; margin-left: 1rem;
+  }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; padding: 0.25rem 0.6rem;
+    border-radius: 100px; font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .tag-html { background: rgba(232,96,48,0.12); color: var(--html-color); }
+  .tag-css { background: rgba(48,144,224,0.12); color: var(--css-color); }
+  .tag-js { background: rgba(240,208,64,0.12); color: var(--js-color); }
+
+  .day-expand {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .day-card.open .day-expand { grid-template-rows: 1fr; }
+  .day-expand-inner {
+    overflow: hidden;
+  }
+  .day-detail {
+    padding-top: 1.5rem; margin-top: 1.5rem;
+    border-top: 1px solid var(--card-border);
+  }
+  .day-detail h4 {
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent);
+    margin-bottom: 0.75rem; font-weight: 600;
+  }
+  .day-detail p {
+    color: var(--text-dim); font-size: 0.9rem;
+    margin-bottom: 1rem; line-height: 1.7;
+  }
+  .day-detail a {
+    color: var(--accent3); text-decoration: none;
+    border-bottom: 1px solid rgba(64,176,240,0.3);
+    transition: border-color 0.3s;
+  }
+  .day-detail a:hover { border-color: var(--accent3); }
+
+  .task-box {
+    background: var(--bg3);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 1.25rem 1.5rem;
+    margin-top: 1rem;
+  }
+  .task-box .task-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent);
+    margin-bottom: 0.5rem; font-weight: 500;
+  }
+  .task-box p {
+    color: var(--text); font-size: 0.9rem; margin-bottom: 0;
+  }
+
+  .toggle-icon {
+    width: 24px; height: 24px; flex-shrink: 0;
+    border: 1px solid var(--card-border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+    margin-left: 1rem;
+    margin-top: 0.3rem;
+    color: var(--text-dim);
+  }
+  .toggle-icon svg {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .day-card.open .toggle-icon {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+  .day-card.open .toggle-icon svg { transform: rotate(45deg); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center; padding: 4rem 2rem;
+    border-top: 1px solid var(--card-border);
+    margin-top: 3rem;
+  }
+  footer p { font-size: 0.8rem; color: var(--text-dim); }
+  footer .heart { color: var(--accent2); }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-wrap {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px; z-index: 200;
+    background: rgba(255,255,255,0.03);
+  }
+  .progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.1s;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes scrollDown {
+    0% { top: -40px; }
+    100% { top: 40px; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 700px) {
+    nav ul { display: none; }
+    section { padding: 3rem 1.25rem; }
+    .hero-stats { gap: 1.5rem; }
+    .day-tags { display: none; }
+    .day-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+  <div class="hero-badge"><div class="dot"></div> Pre začiatočníkov so základmi Pythonu</div>
+  <h1>HTML + CSS + JS<br>v <em>14 krokoch</em></h1>
+  <p>Od prázdneho súboru po vlastnú interaktívnu stránku. Žiadne frameworky, žiadna inštalácia — len prehliadač a tvoja hlava.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">14</div><div class="label">Krokov</div></div>
+    <div class="hero-stat"><div class="num">7</div><div class="label">Projektov</div></div>
+    <div class="hero-stat"><div class="num">0</div><div class="label">Inštalácií</div></div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scrolluj</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══════ ROADMAP ═══════ -->
+<section id="roadmap">
+  <div class="section-label reveal">Roadmap</div>
+  <div class="section-title reveal">Krok po kroku</div>
+  <div class="section-desc reveal">Klikni na kartu pre detaily — čo prejsť, čo spraviť, a prečo to robíme.</div>
+
+  <!-- WEEK 1 -->
+  <div class="week-header reveal">
+    <div class="week-num">01</div>
+    <div class="week-info">
+      <h3>HTML &amp; CSS</h3>
+      <p>Základy webu — štruktúra, štýly, layout, responzivita</p>
+    </div>
+  </div>
+
+  <!-- Day 1-2 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 1 – 2</div>
+        <div class="day-title">HTML základy</div>
+        <div class="day-summary">Elementy, atribúty, linky, obrázky, zoznamy, tabuľky, formuláre</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-html">HTML</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Čo prejsť</h4>
+      <p><a href="https://www.w3schools.com/html/" target="_blank">W3Schools HTML Tutorial</a> — sekcie Elements, Attributes, Headings, Paragraphs, Links, Images, Lists, Tables, Forms. Netreba čítať všetko — prejdi príklady, skúšaj v editore.</p>
+      <div class="task-box">
+        <div class="task-label">→ Úloha</div>
+        <p>Vytvor stránku <strong>„O mne"</strong> — nadpis, odsek o sebe, zoznam 5 obľúbených vecí, obrázok, odkaz na obľúbenú stránku. Žiadne CSS, len čisté HTML. Má to byť škaredé — to je v poriadku.</p>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- Day 3-4 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 3 – 4</div>
+        <div class="day-title">CSS základy</div>
+        <div class="day-summary">Selektory, farby, pozadia, box model, fonty, štýlovanie textu</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-css">CSS</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Čo prejsť</h4>
+      <p><a href="https://www.w3schools.com/css/" target="_blank">W3Schools CSS Tutorial</a> — Selectors, Colors, Backgrounds, Borders, Margins, Padding (box model!), Fonts, Text, Links. Kľúčové je pochopiť <strong>box model</strong> — margin, border, padding, content.</p>
+      <div class="task-box">
+        <div class="task-label">→ Úloha</div>
+        <p>Vezmi svoju „O mne" stránku a uprav ju CSSkom. Zmeň farby, fonty, pridaj pozadie. Cieľ: <strong>aby vyzerala ako niečo, čo by si ukázal kamarátovi.</strong></p>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 5</div>
+        <div class="day-title">Flexbox</div>
+        <div class="day-summary">Flexbox layout + hra Flexbox Froggy</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-css">CSS</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Čo prejsť</h4>
+      <p><a href="https://www.w3schools.com/css/css3_flexbox.asp" target="_blank">W3Schools CSS Flexbox</a> a potom <a href="https://flexboxfroggy.com/" target="_blank">Flexbox Froggy</a> — hra, kde CSSkom naviguješ žaby na lekná. Celá hra trvá ~30 minút a naučí flexbox lepšie ako hodina čítania.</p>
+      <div class="task-box">
+        <div class="task-label">→ Úloha</div>
+        <p>Preusporiadaj svoju stránku pomocou flexboxu — daj obsah do stĺpcov, vycentruj veci, sprav <strong>navigačnú lištu</strong> hore.</p>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- Day 6 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 6</div>
+        <div class="day-title">CSS Grid + Responsive</div>
+        <div class="day-summary">Grid layout, media queries, mobilná verzia</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-css">CSS</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Čo prejsť</h4>
+      <p><a href="https://www.w3schools.com/css/css_grid.asp" target="_blank">W3Schools CSS Grid</a> (len basics), <a href="https://cssgridgarden.com/" target="_blank">Grid Garden</a> (hra na grid), a <a href="https://www.w3schools.com/css/css_rwd_mediaqueries.asp" target="_blank">W3Schools Media Queries</a>.</p>
+      <div class="task-box">
+        <div class="task-label">→ Úloha</div>
+        <p>Pridaj na stránku <strong>grid galériu</strong> (3×2 mriežka obrázkov/kariet). Stránka sa musí rozumne zobraziť aj na mobile — otestuj cez DevTools (F12 → toggle device toolbar).</p>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- Day 7 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 7</div>
+        <div class="day-title">Projekt — Osobná stránka v1.0</div>
+        <div class="day-summary">Postav od nuly vlastnú personal website</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-html">HTML</span><span class="tag tag-css">CSS</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Požiadavky</h4>
+      <p>Navigácia hore · Hero sekcia (veľký nadpis + popis) · Sekcia „O mne" · Sekcia „Projekty" (placeholder) · Footer s kontaktom.</p>
+      <div class="task-box">
+        <div class="task-label">→ Pravidlo</div>
+        <p><strong>Žiadne copy-paste z tutoriálov.</strong> Písať od prázdneho súboru. Keď nevieš niečo — Googluj, ale nekopíruj celé bloky. Ak to ide ťažko, je to normálne — práve sa učíš.</p>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="week-header reveal">
+    <div class="week-num">02</div>
+    <div class="week-info">
+      <h3>JavaScript + Finálny projekt</h3>
+      <p>Interaktivita, DOM manipulácia, a vylepšenie tvojej stránky</p>
+    </div>
+  </div>
+
+  <!-- Day 8-9 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 8 – 9</div>
+        <div class="day-title">JavaScript základy</div>
+        <div class="day-summary">Premenné, funkcie, eventy, DOM manipulation</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-js">JS</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Čo prejsť</h4>
+      <p><a href="https://www.w3schools.com/js/" target="_blank">W3Schools JavaScript</a> — Variables (let, const), Data Types, Functions, Events, DOM (getElementById, querySelector, innerHTML, addEventListener). S Pythonom to pôjde rýchlo — syntax je iná, ale logika je rovnaká.</p>
+      <div class="task-box">
+        <div class="task-label">→ Úloha</div>
+        <p>Sprav stránku s tlačidlom <strong>„Zmeň farbu pozadia"</strong> — každý klik nastaví náhodnú farbu. Bonus: pridaj counter, koľkokrát si klikol.</p>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- Day 10 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 10</div>
+        <div class="day-title">DOM + Eventy</div>
+        <div class="day-summary">Vytváranie elementov, klikanie, input handling</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-js">JS</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Čo prejsť</h4>
+      <p><a href="https://www.w3schools.com/js/js_htmldom.asp" target="_blank">W3Schools JS HTML DOM</a> a <a href="https://www.w3schools.com/js/js_events.asp" target="_blank">JS Events</a>. Kľúčové: createElement, appendChild, remove, classList.toggle.</p>
+      <div class="task-box">
+        <div class="task-label">→ Úloha</div>
+        <p>Sprav <strong>to-do list</strong>: input pole, tlačidlo „Pridaj", zoznam pod tým. Klik pridá položku. Bonus: klik na položku ju prečiarkne.</p>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- Day 11 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 11</div>
+        <div class="day-title">Interaktívne prvky</div>
+        <div class="day-summary">Časovače, localStorage, mini-projekt podľa výberu</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-js">JS</span><span class="tag tag-css">CSS</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Čo prejsť</h4>
+      <p>W3Schools: setTimeout, setInterval, a localStorage. Tieto tri veci odomknú množstvo možností.</p>
+      <h4>Vyber si 1 mini-projekt</h4>
+      <p><strong>Stopky</strong> — štart, stop, reset, reálny čas<br><strong>Quiz</strong> — 5 otázok, skóre na konci<br><strong>Dark/Light mode</strong> — prepína tému, pamätá si voľbu</p>
+    </div></div></div>
+  </div>
+
+  <!-- Day 12-14 -->
+  <div class="day-card reveal" onclick="toggleCard(this)">
+    <div class="day-top">
+      <div>
+        <div class="day-label">Stage 12 – 14</div>
+        <div class="day-title">Finálny projekt — Stránka v2.0</div>
+        <div class="day-summary">Vylepši svoju osobnú stránku o interaktívne prvky</div>
+      </div>
+      <div style="display:flex;align-items:flex-start">
+        <div class="day-tags"><span class="tag tag-html">HTML</span><span class="tag tag-css">CSS</span><span class="tag tag-js">JS</span></div>
+        <div class="toggle-icon"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg></div>
+      </div>
+    </div>
+    <div class="day-expand"><div class="day-expand-inner"><div class="day-detail">
+      <h4>Pridaj minimálne 3 z týchto</h4>
+      <p>
+        ✦ Smooth scroll navigácia<br>
+        ✦ Dark/light mode toggle<br>
+        ✦ Animovaný hero — text sa postupne objaví<br>
+        ✦ Interaktívna sekcia (quiz, kalkulačka, generátor faktov)<br>
+        ✦ Galéria s lightboxom (klik → zväčší obrázok)<br>
+        ✦ Kontaktný formulár s validáciou (JS skontroluje email)
+      </p>
+      <div class="task-box">
+        <div class="task-label">→ Na konci</div>
+        <p>Odprezentuj stránku — čo si spravil, čo bolo najťažšie, čo by si spravil inak. <strong>Toto je tvoj prvý web.</strong></p>
+      </div>
+    </div></div></div>
+  </div>
+</section>
+
+<footer>
+  <p>Vytvorené s <span class="heart">♥</span> pre budúcich webových vývojárov</p>
+</footer>
+
+<script>
+function toggleCard(card) {
+  card.classList.toggle('open');
+}
+
+// Scroll progress
+window.addEventListener('scroll', () => {
+  const bar = document.getElementById('progressBar');
+  const scrolled = window.scrollY;
+  const height = document.documentElement.scrollHeight - window.innerHeight;
+  bar.style.width = (scrolled / height * 100) + '%';
+});
+
+// Reveal on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
